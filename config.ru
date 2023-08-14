@@ -23,6 +23,8 @@ METRICS = lambda do |data, type|
         if value.is_a?(Array)
           value.each do |val|
             v = val.delete(:value)
+            next if val.zero?
+
             labels = val.map { |k,v| "#{k}=#{v.to_s.inspect}"}.join(",")
 
             metrics << <<~METRIC
@@ -32,6 +34,7 @@ METRICS = lambda do |data, type|
           end
           next
         end
+        next if value.zero?
         
         metrics << <<~METRIC
           # TYPE #{name} #{type}
