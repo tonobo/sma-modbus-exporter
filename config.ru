@@ -47,10 +47,10 @@ MODBUS = lambda do
       gauge[:ac_power_kw_total] = slave.read_holding_registers(30775, 2).to_32u.first.to_f / 1000
       gauge[:ac_power_kw] = [
         {phase: 1, value: slave.read_holding_registers(30777, 2).to_32u.first.to_f / 1000},
-        {phase: 1, value: slave.read_holding_registers(30779, 2).to_32u.first.to_f / 1000},
-        {phase: 1, value: slave.read_holding_registers(30781, 2).to_32u.first.to_f / 1000},
+        {phase: 2, value: slave.read_holding_registers(30779, 2).to_32u.first.to_f / 1000},
+        {phase: 3, value: slave.read_holding_registers(30781, 2).to_32u.first.to_f / 1000},
       ]
-      counter[:ac_yield_total] = slave.read_holding_registers(30529, 2).to_32u.first.to_f / 1000
+      counter[:yield_total] = slave.read_holding_registers(30529, 2).to_32u.first.to_f / 1000
     end
   end
   [counter, gauge]
