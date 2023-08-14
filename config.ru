@@ -12,7 +12,7 @@ class Array
   def to_32u
     raise "Array requires an even number of elements to pack to 32bits: was #{self.size}" unless self.size.even?
     self.each_slice(2).map { |(msb, lsb)| [msb, lsb].pack('n*').unpack('N')[0] }.tap do
-      return 0 if _1 >= 2<<30
+      return [0] if _1.first >= 2<<30
     end
   end
 end
