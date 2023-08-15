@@ -15,6 +15,12 @@ class Array
       return [0] if _1.first >= 2<<30
     end
   end
+
+  def to_64u
+    self.each_slice(4).map { |(msb, lsb, a, b)| [a, b].pack('n*').unpack('N')[0] }.tap do
+      return [0] if _1.first >= 2<<30
+    end
+  end
 end
 
 METRICS = lambda do |data, type|
@@ -23,7 +29,7 @@ METRICS = lambda do |data, type|
         if value.is_a?(Array)
           value.each do |val|
             v = val.delete(:value)
-            next if val.zero?
+            next if v.zero?
 
             labels = val.map { |k,v| "#{k}=#{v.to_s.inspect}"}.join(",")
 
@@ -56,6 +62,7 @@ MODBUS = lambda do
         {phase: 3, value: slave.read_holding_registers(30781, 2).to_32u.first.to_f / 1000},
       ]
       counter[:yield_total] = slave.read_holding_registers(30529, 2).to_32u.first.to_f / 1000
+      counter[:yield_today_total] = slave.read_holding_registers(30517, 4).to_64u.first.to_f / 1000
     end
   end
   [counter, gauge]
